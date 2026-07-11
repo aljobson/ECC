@@ -34,6 +34,8 @@ spec; this is informational, not a functional error) and Vite dev-only
 
 ## Route Audit — Dark Mode (1440px)
 
+> **Contrast column caveat:** ✅ marks in the Contrast column are **visual spot-checks, not measured WCAG ratios**. The axe-core run (see Accessibility Violations below) did not surface `color-contrast` violations on these routes, but per-element luminance ratios were not independently computed. Treat as "no obvious contrast failure observed," not "measured AA-compliant."
+
 | Route | Dark BG | Contrast | Icons | Inputs | Fonts | No Bleed |
 |---|---|---|---|---|---|---|
 | `/` | ✅ `rgb(5,7,10)` | ✅ | ✅ | n/a | ✅ | ✅ |
@@ -114,6 +116,8 @@ overflow detected anywhere.
 per-route regression.
 
 ## Findings Table
+
+> **axe impact → project severity mapping:** axe's `critical`/`serious`/`moderate` impact is remapped to this plan's CRITICAL/HIGH/MEDIUM/LOW by *user-facing consequence*, not 1:1. A `critical`-impact axe rule affecting a single non-blocking control (e.g. `button-name` on a settings toggle) is HIGH here, not CRITICAL, because it does not block a core wallet flow. CRITICAL is reserved for blank-render or total-lockout defects.
 
 | ID | Severity | Description | Route/File | Fixed inline? |
 |---|---|---|---|---|
