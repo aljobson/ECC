@@ -42,7 +42,7 @@ Tests run from `e2e/` directory using `npx playwright test` (Chromium, sequentia
 | `wallet-flows.spec.ts` | PASS | |
 | `webauthn-prf-kek.spec.js` | PASS (majority) | 1 skipped |
 | `web-deniability-e2e.spec.ts` | PASS | |
-| `qa-seed-import-e2e.spec.ts` (4 new) | PASS (all 4) | New QA spec |
+| `qa-demo-isolation-e2e.spec.ts` (4 new) | PASS (all 4) | New QA spec (renamed from `qa-seed-import-e2e.spec.ts`) |
 | Supervised harnesses (3 files) | SKIPPED | |
 | **Total** | **57 passed / 1 failed / 3 skipped** | |
 
@@ -60,7 +60,9 @@ Tested via `/?demo=1` using Playwright (Chromium, headless).
 
 ---
 
-## New QA Specs (`e2e/qa-seed-import-e2e.spec.ts`)
+## New QA Specs (`e2e/qa-demo-isolation-e2e.spec.ts`)
+
+> **Note**: Spec file is located in the Veyrnox app repo at `C:\Users\aljob\Downloads\VEYRNOX-CLONE-ECC\e2e\qa-demo-isolation-e2e.spec.ts` (not in the ECC worktree). Renamed from `qa-seed-import-e2e.spec.ts`; throwaway seed moved to `.env.test` (git-ignored).
 
 | Test | Result | Notes |
 |---|---|---|
@@ -78,7 +80,7 @@ Tested via `/?demo=1` using Playwright (Chromium, headless).
 | F-001 | CRITICAL | P0 | `@revenuecat/purchases-capacitor` not installed. Vite dev server fails to resolve the import in `src/lib/purchases.js`, causing a module transform error that prevents the app from rendering. 18 of 19 E2E failures were caused by this single missing dependency. | `src/lib/purchases.js:8`, `vite.config.js` | YES — added alias to `src/lib/stubs/revenuecat-stub.js` in `vite.config.js`; stub is a no-op safe for web (all methods guard with `isNative()`) |
 | F-002 | HIGH | P1 | Duress PIN decoy routing broken. After Emergency PIN unlock, the app does not navigate to the `HIDDEN WALLET` decoy view. Text `HIDDEN WALLET` is not found in the DOM. This is a regression in the deniability/duress protection feature. | `e2e/duress-decoy-routing.spec.js:76`, UI layer | NO — requires investigation of decoy wallet routing logic |
 | F-003 | MEDIUM | P2 | `frame-ancestors` CSP directive placed in a `<meta>` element. Browsers silently ignore `frame-ancestors` when delivered via `<meta>` (per spec). Clickjacking protection is not enforced. The directive must be delivered as an HTTP response header (`Content-Security-Policy: frame-ancestors 'none'`). | App HTML `<meta>` CSP, detected via console error in browser | NO — requires server/hosting config change |
-| F-004 | LOW | P2 | Send form address input not reachable at `/send?demo=1` without completing onboarding. No `input[placeholder*="0x"]`, `getByLabel(/address|recipient/i)`, or `input[type="text"]` found. The send route likely redirects or renders an onboarding gate before exposing the form. | `e2e/qa-seed-import-e2e.spec.ts:send form test`, `src/` send routing | NO — test marked INCONCLUSIVE; send form E2E requires pre-seeded vault state |
+| F-004 | LOW | P2 | Send form address input not reachable at `/send?demo=1` without completing onboarding. No `input[placeholder*="0x"]`, `getByLabel(/address|recipient/i)`, or `input[type="text"]` found. The send route likely redirects or renders an onboarding gate before exposing the form. | `e2e/qa-demo-isolation-e2e.spec.ts:send form test`, `src/` send routing | NO — test uses `test.skip`; send form E2E requires pre-seeded vault state |
 
 ---
 
