@@ -10,8 +10,8 @@
 
 Two targets tested in parallel:
 
-1. **ECC plugin** — `C:\Users\aljob\Downloads\VEYRNOX-CLONE-ECC\.claude\worktrees\upbeat-bartik-2317a9`
-2. **Veyrnox wallet app** — `C:\Users\aljob\Downloads\VEYRNOX-CLONE-ECC`
+1. **ECC plugin** — `<REDACTED_PATH>\Users\<username>\Downloads\VEYRNOX-CLONE-ECC\.claude\worktrees\upbeat-bartik-2317a9`
+2. **Veyrnox wallet app** — `<REDACTED_PATH>\Users\<username>\Downloads\VEYRNOX-CLONE-ECC`
 
 ---
 
@@ -38,7 +38,7 @@ Two targets tested in parallel:
 | Concern | Detail |
 |---|---|
 | ECC plugin root | `…/upbeat-bartik-2317a9` |
-| Veyrnox app root | `C:\Users\aljob\Downloads\VEYRNOX-CLONE-ECC` |
+| Veyrnox app root | `<REDACTED_PATH>\Users\<username>\Downloads\VEYRNOX-CLONE-ECC` |
 | Demo mode | `?demo=1` query param (no real keys needed for UI agent) |
 | Testnet seed | `bamboo lyrics harvest potato seat carry equip nation slam begin admit pet` (throwaway — E2E agent only) |
 | Derived addresses | EVM `0x90f9f1F9F5a1938B21ef0C20352C7b792E68a729`, BTC testnet `tb1qztdfvzkdup458v6nk555ztzsgduh7lhggekx54`, SOL devnet `Cp5MYrCMbUe7wra4ziGsVN672ZjpeLi5CFNj4Je7yFWK` |

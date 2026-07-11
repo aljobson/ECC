@@ -10,8 +10,8 @@
 
 ## Global Constraints
 
-- ECC plugin root: `C:\Users\aljob\Downloads\VEYRNOX-CLONE-ECC\.claude\worktrees\upbeat-bartik-2317a9`
-- Veyrnox app root: `C:\Users\aljob\Downloads\VEYRNOX-CLONE-ECC`
+- ECC plugin root: `<REDACTED_PATH>\Users\<username>\Downloads\VEYRNOX-CLONE-ECC\.claude\worktrees\upbeat-bartik-2317a9`
+- Veyrnox app root: `<REDACTED_PATH>\Users\<username>\Downloads\VEYRNOX-CLONE-ECC`
 - Throwaway testnet seed (E2E agent only, never commit): `bamboo lyrics harvest potato seat carry equip nation slam begin admit pet`
 - Derived addresses: EVM `0x90f9f1F9F5a1938B21ef0C20352C7b792E68a729`, BTC testnet `tb1qztdfvzkdup458v6nk555ztzsgduh7lhggekx54`, SOL devnet `Cp5MYrCMbUe7wra4ziGsVN672ZjpeLi5CFNj4Je7yFWK`
 - No mainnet transactions — testnet/devnet only
@@ -42,7 +42,7 @@
 - [ ] **Step 1: Run the full ECC test suite**
 
 ```bash
-cd "C:\Users\aljob\Downloads\VEYRNOX-CLONE-ECC\.claude\worktrees\upbeat-bartik-2317a9"
+cd "<REDACTED_PATH>\Users\<username>\Downloads\VEYRNOX-CLONE-ECC\.claude\worktrees\upbeat-bartik-2317a9"
 node tests/run-all.js 2>&1
 ```
 
@@ -136,7 +136,7 @@ git commit -m "fix(ecc): inline QA fixes from Task 1"
 - [ ] **Step 1: Run the full test suite with pretest guards**
 
 ```bash
-cd "C:\Users\aljob\Downloads\VEYRNOX-CLONE-ECC"
+cd "<REDACTED_PATH>\Users\<username>\Downloads\VEYRNOX-CLONE-ECC"
 npm test 2>&1
 ```
 
@@ -233,7 +233,7 @@ git commit -m "fix(veyrnox-unit): inline QA fixes from Task 2"
 - [ ] **Step 1: Run existing Playwright E2E specs**
 
 ```bash
-cd "C:\Users\aljob\Downloads\VEYRNOX-CLONE-ECC"
+cd "<REDACTED_PATH>\Users\<username>\Downloads\VEYRNOX-CLONE-ECC"
 npm run test:e2e 2>&1
 ```
 
@@ -469,7 +469,7 @@ Missing address validation before signing = HIGH. Console-logged signed tx = CRI
 - [ ] **Step 6: Audit ring-boundary compliance**
 
 ```bash
-cd "C:\Users\aljob\Downloads\VEYRNOX-CLONE-ECC"
+cd "<REDACTED_PATH>\Users\<username>\Downloads\VEYRNOX-CLONE-ECC"
 npm run lint:rings 2>&1
 ```
 
@@ -563,7 +563,7 @@ git commit -m "fix(wallet-core): <description of fix>"
 - [ ] **Step 1: Start the dev server**
 
 ```bash
-cd "C:\Users\aljob\Downloads\VEYRNOX-CLONE-ECC"
+cd "<REDACTED_PATH>\Users\<username>\Downloads\VEYRNOX-CLONE-ECC"
 npm run dev 2>&1 &
 # Wait for server ready signal
 ```
