@@ -15,15 +15,16 @@ All four pretest guards ran successfully before the Vitest suite:
 
 ## Test Suite
 
-- **Result**: PASS (all observed tests pass; no failures detected in any run)
+- **Result**: FAIL before fix → PASS after fix
 - **Test files**: 322 test files across `src/**/*.test.{js,jsx}`
 - **Wallet-core subset**: 57 test files in `src/wallet-core/__tests__/` plus 30+ additional tests in subdirectory `__tests__/` folders (coldkey, evm, hw, keystore, rpc)
 - **Vitest version**: 4.1.9
 - **Run mode**: serial (`maxWorkers: 1`) due to 192 MiB Argon2id KDF memory requirement
-- **Failed tests**: none observed
-- **Passed (wallet-core subset observed)**: 70+ tests all passing as of observation (suite still running at time of report; full suite takes 30–60 min due to KDF cost)
+- **Failed tests (pre-fix)**: 1 — `deniability-timing.test.js > H3 — primary-success equalizer covers one KDF at current params > PRIMARY_UNLOCK_EQUALIZER_MS >= the measured cost of one KDF at KDF_PARAMS` — expected 1500 >= 1720 (FAIL)
+- **Failed tests (post-fix)**: 0
+- **Passed (wallet-core subset)**: 849 tests in the wallet-core subset run; 20 tests in the targeted deniability+equalizer re-run after fix — all passing
 
-> Note: `npm test` output is truncated by vitest's ANSI terminal control sequences when not running in a real TTY. The verbose reporter confirms all observed tests pass. The full-suite run background task (`npx vitest run src/wallet-core --reporter=verbose`) was in progress with 0 failures at time of writing.
+> The `PRIMARY_UNLOCK_EQUALIZER_MS` constant (1500ms) was stale — calibrated for 64 MiB KDF but the code runs 192 MiB KDF (SAST M3). Fixed to 2000ms; see VU-06 below.
 
 ## Coverage Baseline
 
@@ -134,14 +135,15 @@ Per-file coverage table cannot be populated without completing the full coverage
 | VU-03 | HIGH | P1 | sol/hw-send.js has no unit tests — hardware-wallet SOL signing is untested in CI. | src/wallet-core/sol/hw-send.js:1 | No |
 | VU-04 | LOW | P2 | evm/spam.js has no tests — pure display-layer spam classifier is untested; no security impact but test gap exists. | src/wallet-core/evm/spam.js:1 | No |
 | VU-05 | MEDIUM | P2 | Coverage baseline unavailable — vitest.config.js disables coverage by default; no per-file % baseline has been established. Recommend enabling coverage in a nightly CI run. | vitest.config.js:44 | No |
+| VU-06 | HIGH | P1 | `PRIMARY_UNLOCK_EQUALIZER_MS` stale at 1500ms after KDF params reverted to 192 MiB (SAST M3) — test measured actual KDF cost at ~1720ms, so the H3 deniability timing guard FAILED. A correct-password unlock was measurably faster than a wrong-password unlock, creating a timing side-channel. | src/lib/WalletProvider.jsx:207 | YES — bumped to 2000ms; both H3 tests pass |
 
 ## Summary
 
-- **Total findings**: 5
-- **CRITICAL**: 0 | **HIGH**: 3 | **MEDIUM**: 1 | **LOW**: 1
-- **Fixed inline**: 0
+- **Total findings**: 6
+- **CRITICAL**: 0 | **HIGH**: 4 | **MEDIUM**: 1 | **LOW**: 1
+- **Fixed inline**: 1 (VU-06)
 - **P0 (block ship)**: 0 — all pretest guards pass; no CSPRNG or deniability leak detected
-- **P1 (fix next sprint)**: 3 — hw-send test coverage gaps (VU-01, VU-02, VU-03)
+- **P1 (fix next sprint)**: 3 open — hw-send test coverage gaps (VU-01, VU-02, VU-03); VU-06 fixed
 - **P2 (nice to have)**: 2 — spam.js tests, coverage baseline
 
 ### Pretest guard status
@@ -164,4 +166,6 @@ Expected runtime: 45–90 min on the current machine due to Argon2id KDF cost pe
 
 ### Inline fixes
 
-No P0 issues were found requiring inline fixes. VU-01/02/03 (hw-send test gaps) are P1 and should be addressed in the next sprint by writing stub-based unit tests that mock `@ledgerhq/hw-app-btc`, `@trezor/connect-web`, and the transport layer — following the pattern already established in `src/wallet-core/hw/__tests__/trezor.test.js`.
+**VU-06 (HIGH/P1) — FIXED**: `PRIMARY_UNLOCK_EQUALIZER_MS` raised from 1500ms to 2000ms in `src/lib/WalletProvider.jsx:207`. The constant was calibrated for a short-lived 64 MiB KDF phase (commit 1226085e) and was not updated when SAST M3 reverted params to 192 MiB. At 192 MiB, the Node.js/WASM test runner measures ~1720ms per KDF, causing `deniability-timing.test.js > H3` to fail (`expected 1500 >= 1720`). The fix was verified by re-running both the targeted test file and `src/lib/__tests__/primaryUnlockEqualizer.test.js` (20/20 tests pass, exit code 0).
+
+VU-01/02/03 (hw-send test gaps) are P1 and should be addressed in the next sprint by writing stub-based unit tests that mock `@ledgerhq/hw-app-btc`, `@trezor/connect-web`, and the transport layer — following the pattern already established in `src/wallet-core/hw/__tests__/trezor.test.js`.
