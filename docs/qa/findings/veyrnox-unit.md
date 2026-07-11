@@ -34,7 +34,7 @@ Coverage is **disabled by default** in `vitest.config.js` (`coverage.enabled: fa
 npm test -- --coverage
 ```
 
-Per-file coverage table cannot be populated without completing the full coverage run (estimated 45–90 min due to KDF). The qualitative coverage map below is based on test import analysis.
+Coverage baseline not collected this pass — full suite requires 30–90 min serial execution due to Argon2id WASM cost. Recommend scheduling as a nightly CI job. The table below shows qualitative coverage status based on test-file presence.
 
 | File | Test Coverage | Notes |
 |---|---|---|
@@ -99,7 +99,6 @@ Per-file coverage table cannot be populated without completing the full coverage
 | **src/wallet-core/evm/hw-send.js** | **NONE** | **No test file found** |
 | **src/wallet-core/sol/hw-send.js** | **NONE** | **No test file found** |
 | **src/wallet-core/evm/spam.js** | **NONE** | **No test file found; not imported by any test** |
-| src/wallet-core/btc/hw-send.js | NONE | See above |
 | src/wallet-core/evm/networks.js | HIGH | networks.test.js |
 | src/wallet-core/netUrl.js | HIGH | netUrl.test.js |
 | src/wallet-core/provisionChaff.js | HIGH | provisionChaff.test.js |
@@ -109,11 +108,6 @@ Per-file coverage table cannot be populated without completing the full coverage
 | src/wallet-core/amount.js | HIGH | amount.test.js |
 | src/wallet-core/assets.js | HIGH | assets.test.js |
 | src/wallet-core/rpcConfig.js | LOW | no direct test; config constants only |
-| src/wallet-core/btc/provider.js | MEDIUM | direct import in btc tests |
-| src/wallet-core/sol/provider.js | LOW | mocked in non-wallet-core tests |
-| src/wallet-core/btc/hw-send.js | NONE | no test |
-| src/wallet-core/evm/hw-send.js | NONE | no test |
-| src/wallet-core/sol/hw-send.js | NONE | no test |
 
 ## Untested Surface
 
@@ -135,7 +129,7 @@ Per-file coverage table cannot be populated without completing the full coverage
 | VU-03 | HIGH | P1 | sol/hw-send.js has no unit tests — hardware-wallet SOL signing is untested in CI. | src/wallet-core/sol/hw-send.js:1 | No |
 | VU-04 | LOW | P2 | evm/spam.js has no tests — pure display-layer spam classifier is untested; no security impact but test gap exists. | src/wallet-core/evm/spam.js:1 | No |
 | VU-05 | MEDIUM | P2 | Coverage baseline unavailable — vitest.config.js disables coverage by default; no per-file % baseline has been established. Recommend enabling coverage in a nightly CI run. | vitest.config.js:44 | No |
-| VU-06 | HIGH | P1 | `PRIMARY_UNLOCK_EQUALIZER_MS` stale at 1500ms after KDF params reverted to 192 MiB (SAST M3) — test measured actual KDF cost at ~1720ms, so the H3 deniability timing guard FAILED. A correct-password unlock was measurably faster than a wrong-password unlock, creating a timing side-channel. | src/lib/WalletProvider.jsx:207 | YES — bumped to 2000ms; both H3 tests pass |
+| VU-06 | HIGH | P1 | `PRIMARY_UNLOCK_EQUALIZER_MS` stale at 1500ms after KDF params reverted to 192 MiB (SAST M3) — test measured actual KDF cost at ~1720ms, so the H3 deniability timing guard FAILED. A correct-password unlock was measurably faster than a wrong-password unlock, creating a timing side-channel. | src/lib/WalletProvider.jsx:207 | Yes — `PRIMARY_UNLOCK_EQUALIZER_MS` set to 2000ms (measured KDF ~1720ms on calibration device, ~280ms headroom). Must be recalibrated if KDF_PARAMS change or test environment changes. |
 
 ## Summary
 
@@ -152,7 +146,7 @@ All 4 pretest guards **PASS** cleanly. No P0 issues found.
 
 ### Test suite health
 
-All observed wallet-core tests **PASS**. The full suite (322 test files, serial execution due to 192 MiB Argon2id KDF) was in progress at time of writing. The pretest guards passing + 0 failures in all observed tests indicates a healthy green suite. The 57+ wallet-core test files cover vault, KEK, keystore (web/native/hardware), multivault, stealth, panic, duress, deniability, EVM/BTC/SOL send+signing, cold-key, hardware wallet wrappers, walletconnect session/router, and derivation.
+849 wallet-core tests observed passing. Full 322-file suite was not completed at time of writing — do not treat this as a confirmed green suite. The 57+ wallet-core test files cover vault, KEK, keystore (web/native/hardware), multivault, stealth, panic, duress, deniability, EVM/BTC/SOL send+signing, cold-key, hardware wallet wrappers, walletconnect session/router, and derivation.
 
 ### Coverage note
 
